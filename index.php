@@ -17,49 +17,38 @@ $email = $_SESSION['email'];
     <title>Music Database</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
-
         header {
             background-color: #333;
             color: #fff;
             padding: 1rem 0;
             text-align: center;
         }
-
         header h1 {
             margin: 0;
         }
-
         nav ul {
             list-style: none;
             padding: 0;
             display: flex;
             justify-content: center;
+            margin: 0;
         }
-
         nav ul li {
             margin: 0 1rem;
         }
-
         nav ul li a {
             color: #fff;
             text-decoration: none;
             font-weight: bold;
         }
-
         main {
             padding: 2rem;
         }
-
         section {
             margin-bottom: 2rem;
             background-color: #fff;
@@ -67,62 +56,46 @@ $email = $_SESSION['email'];
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        form label, form select, form button {
-            margin-bottom: 1rem;
-        }
-
-        form button {
-            padding: 0.5rem;
-            border: none;
-            background-color: #333;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background-color: #555;
-        }
-
-        #viewResult {
-            margin-top: 1rem;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
-            margin-bottom: 2rem;
         }
-
         th, td {
-            padding: 0.75rem;
-            text-align: left;
             border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
         }
-
         th {
-            background-color: #f4f4f4;
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        form {
+            display: flex;
+            flex-direction: column;
         }
-
-        tr:hover {
-            background-color: #f1f1f1;
+        form label {
+            margin: 0.5rem 0 0.2rem;
         }
-
-        footer {
-            text-align: center;
-            padding: 1rem 0;
+        form input {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        form button {
+            padding: 0.5rem;
             background-color: #333;
             color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        footer {
+            text-align: center;
+            padding: 0rem;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
 
         .pagination {
@@ -182,15 +155,15 @@ $email = $_SESSION['email'];
             </form>
             <div id="viewResult"></div>
         </section>
-        <section id="add">
+        <section style="text-align: center;" id="add_data">
             <h2>Add Data</h2>
             <form id="addForm">
                 <label for="addType">Select Data to Add:</label>
                 <select id="addType" name="addType" onchange="updateFormFields()">
-                    <option value="artist">Artist</option>
-                    <option value="album">Album</option>
-                    <option value="song">Song</option>
-                    <option value="genre">Genre</option>
+                    <option value="artist">Artist</option><br><br>
+                    <option value="album">Album</option><br><br>
+                    <option value="song">Song</option><br><br>
+                    <option value="genre">Genre</option><br><br>
                 </select>
                 <div id="addFields"></div>
                 <button type="button" onclick="addData()">Add</button>
