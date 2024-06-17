@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlists</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        nav ul li {
+            margin: 0 1rem;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        main {
+            padding: 2rem;
+        }
+        section {
+            margin-bottom: 2rem;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Playlists</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2 style="text-align: center;">View Playlists</h2>
+            <div id="playlistResult"></div>
+            <div id="add_data">
+                <h2 style="text-align: center;">Create Playlist</h2>
+                <button onclick="location.href='login.html'">Login to Create Playlist</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Music Database Created by</p>
+        <p> CENK KAĞAN ÇAKIR, ASLI AKIN, ARDA YİĞİT EROĞLU</p></p> 
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('get_playlists.php')
+            .then(response => response.json())
+            .then(data => {
+                const playlistResult = document.getElementById('playlistResult');
+                let html = '<table>';
+                html += '<thead><tr>';
+                for (const key in data[0]) {
+                    html += `<th>${key}</th>`;
+                }
+                html += '</tr></thead><tbody>';
+                data.forEach(item => {
+                    html += '<tr>';
+                    for (const key in item) {
+                        html += `<td>${item[key]}</td>`;
+                    }
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                playlistResult.innerHTML = html;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

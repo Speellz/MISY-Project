@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label, form select, form button {
+            margin-bottom: 1rem;
+        }
+
+        form button {
+            padding: 0.5rem;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #555;
+        }
+
+        #viewResult {
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination a.active {
+            background-color: #555;
+        }
+
+        .pagination a:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Music Database</h1>
+        <nav>
+            <ul>
+                <li><a href="#view">View Data</a></li>
+                <li><a href="#add">Add Data</a></li>
+                <li><a href="playlist.html">Playlists</a></li>
+                <li><a href="songs.html">Songs</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="view">
+            <h2>View Data</h2>
+            <form id="viewForm">
+                <label for="viewType">Select Data to View:</label>
+                <select id="viewType" name="viewType">
+                    <option value="artists">Artists</option>
+                    <option value="albums">Albums</option>
+                    <option value="songs">Songs</option>
+                    <option value="genres">Genres</option>
+                </select>
+                <button type="button" onclick="viewData()">View</button>
+            </form>
+            <div id="viewResult"></div>
+        </section>
+        <div id="add_data">
+            <h2>Add Data</h2>
+            <button onclick="location.href='login.html'">Login to Add Data</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Music Database Created by</p>
+        <p> CENK KAĞAN ÇAKIR, ASLI AKIN, ARDA YİĞİT EROĞLU</p></p> 
+    </footer>
+    <script>
+        function viewData(page = 1) {
+            const viewType = document.getElementById('viewType').value;
+            const formData = new FormData();
+            formData.append('viewType', viewType);
+            formData.append('page', page);
+
+            fetch('view_data.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const viewResult = document.getElementById('viewResult');
+                viewResult.innerHTML = '';
+
+                if (data.data.length > 0) {
+                    const table = document.createElement('table');
+                    const thead = document.createElement('thead');
+                    const tbody = document.createElement('tbody');
+
+                    const headers = Object.keys(data.data[0]);
+                    const tr = document.createElement('tr');
+                    headers.forEach(header => {
+                        if (header !== 'row_num') {
+                            const th = document.createElement('th');
+                            th.textContent = header.charAt(0).toUpperCase() + header.slice(1);
+                            tr.appendChild(th);
+                        }
+                    });
+                    thead.appendChild(tr);
+                    table.appendChild(thead);
+
+                    data.data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        headers.forEach(header => {
+                            if (header !== 'row_num') {
+                                const td = document.createElement('td');
+                                td.textContent = item[header];
+                                tr.appendChild(td);
+                            }
+                        });
+                        tbody.appendChild(tr);
+                    });
+                    table.appendChild(tbody);
+
+                    viewResult.appendChild(table);
+
+                    // sayfalama
+                    const totalPages = Math.ceil(data.totalCount / 10);
+                    const pagination = document.createElement('div');
+                    pagination.className = 'pagination';
+
+                    if (page > 1) {
+                        const prevLink = document.createElement('a');
+                        prevLink.href = "#";
+                        prevLink.textContent = "«";
+                        prevLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            viewData(page - 1);
+                        });
+                        pagination.appendChild(prevLink);
+                    }
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageLink = document.createElement('a');
+                        pageLink.href = "#";
+                        pageLink.textContent = i;
+                        if (i === page) {
+                            pageLink.className = 'active';
+                        }
+                        pageLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            viewData(i);
+                        });
+                        pagination.appendChild(pageLink);
+                    }
+
+                    if (page < totalPages) {
+                        const nextLink = document.createElement('a');
+                        nextLink.href = "#";
+                        nextLink.textContent = "»";
+                        nextLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            viewData(page + 1);
+                        });
+                        pagination.appendChild(nextLink);
+                    }
+
+                    viewResult.appendChild(pagination);
+                } else {
+                    viewResult.textContent = 'No data found.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('viewResult').textContent = 'An error occurred while fetching data.';
+            });
+        }
+
+        document.getElementById('viewType').addEventListener('change', function() {
+            viewData(1);
+        });
+    </script>
+</body>
+</html>
